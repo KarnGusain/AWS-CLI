@@ -94,225 +94,47 @@ Below is an example
 +------------+-------------------------+-----------------------+-------+
 ```
 
+6- HOw to list down the aws `IAM` roles via AWS Cli?
 
+✍ Bleow is how you can get `IAM` roles listing, you have to create `profile` to use that in the CLI as i mentioned below..
+
+```Shell
 (awscliv2) $ aws iam list-roles --query 'Roles[?starts_with(RoleName, `hwde`)].RoleName' --output table --profile slpr
 ---------------------------------------------------------
 |                       ListRoles                       |
 +-------------------------------------------------------+
-|  hwde-ec2-backup-role                                 |
-|  hwde-stg-ec2-role                                    |
-|  hwde-storage-iam-admin-role                          |
-|  hwde-storage-iam-backup-fsx-role                     |
-|  hwde-storage-iam-cicd-krawsc101-build-role           |
-|  hwde-storage-iam-cicd-krawsc101-cloudformation-role  |
-|  hwde-storage-iam-cicd-krawsc101-crossaccount-role    |
-|  hwde-storage-iam-cicd-krawsc101-lambda-execute-role  |
-|  hwde_infra_iam_ssm_role                              |
+|  test-ec2-backup-role                                 |
+|  test-stg-ec2-role                                    |
+|  test-stg-iam-admin-role                              |
+|  test-stg-iam-backup-fsx-role                         |
+|  test_infra_iam_ssm_role                              |
 +-------------------------------------------------------+
-
+```
+7- How to get the list of `ec2` volumes based on the `State` as there are are muliple `State` an `ec2` instance can have for example like `in-use`, `Pending` etc.
+ 
+```Shell
 (awscliv2) $ aws ec2 describe-volumes --query 'Volumes[?State==`in-use`].{ID: VolumeId, State: State, InstanceId: Attachments[0].InstanceId}' --profile dev --output table
 ------------------------------------------------------------
 |                      DescribeVolumes                     |
 +------------------------+-----------------------+---------+
 |           ID           |      InstanceId       |  State  |
 +------------------------+-----------------------+---------+
-|  vol-01ea79cc1c0916b00 |  i-0327cf04986086711  |  in-use |
-|  vol-02c7682c6cc3d3683 |  i-03b9a2b946be51127  |  in-use |
-|  vol-0aec200671bfcc19c |  i-0327cf04986086711  |  in-use |
-|  vol-0cac708d236f9b678 |  i-0f1baa88774a3ac9d  |  in-use |
-|  vol-05fe294544859c37e |  i-0f1baa88774a3ac9d  |  in-use |
-|  vol-0e09c8f1c14697206 |  i-03b9a2b946be51127  |  in-use |
-|  vol-05f53cf2c46662d8d |  i-0a4209dfc5774a2ea  |  in-use |
-|  vol-0b54ef040b97682e3 |  i-09379cb842ed015f2  |  in-use |
-|  vol-0789abc045cdb2a56 |  i-0c9e1155fe0105ed6  |  in-use |
-|  vol-08684d2880b2cf22b |  i-0c9e1155fe0105ed6  |  in-use |
-|  vol-0ad69e58bb689838e |  i-0c9e1155fe0105ed6  |  in-use |
-|  vol-0fbe38a5b1656f575 |  i-0c9e1155fe0105ed6  |  in-use |
-|  vol-00572e3b4a47a6b15 |  i-0d7aca605032e6ff3  |  in-use |
-|  vol-016f1a958312578e7 |  i-0bf8c4933a451c3a9  |  in-use |
-|  vol-0a16954434b191c4c |  i-0e9e36308d1dad996  |  in-use |
-|  vol-0cce47cc4afeb644c |  i-0bf8c4933a451c3a9  |  in-use |
-|  vol-04c7fed89d5e591b0 |  i-0e9e36308d1dad996  |  in-use |
-|  vol-02b261613c3dde2f6 |  i-0f57b147ea9124344  |  in-use |
-|  vol-0060d2ec85131a87b |  i-0f57b147ea9124344  |  in-use |
-|  vol-0b88f41975ef5cb3f |  i-02e4cbcbe10cb5e79  |  in-use |
-|  vol-09ed8d3e9baa62b0a |  i-0cb02b3c973b77bf6  |  in-use |
+|  vol-01ea79cc1c1234b00 |  i-0327cf04986081234  |  in-use |
+|  vol-1234abc045cdb2a56 |  i-0c9e1111fe0105ed6  |  in-use |
+|  vol-0fbe38a5b1234f575 |  i-0c8d1111fe0105ed6  |  in-use |
+|  vol-09ed5d3e9bac12b0a |  i-0cb11b3c973b03bf6  |  in-use |
 +------------------------+-----------------------+---------+
-
-Note: VolumeType attr only for ONTAP hence it will not work for LUSTRE!
-(awscliv2) $ aws fsx describe-backups --query 'Backups[?VolumeType=="ONTAP"].Volume[].{ID: VolumeId, VolumeT: VolumeType}' --profile phx --output table
-----------------------------------------
-|            DescribeBackups           |
-+--------------------------+-----------+
-|            ID            |  VolumeT  |
-+--------------------------+-----------+
-|  fsvol-01813a2b13b89be07 |  ONTAP    |
-|  fsvol-0a6a05c31521606c2 |  ONTAP    |
-|  fsvol-07257fa804d30828e |  ONTAP    |
-|  fsvol-0e32cdbcef0dcc7bf |  ONTAP    |
-|  fsvol-02fded866f94d7f1c |  ONTAP    |
-+--------------------------+-----------+
-
-Better way::
-(awscliv2) $ aws fsx describe-backups --query 'Backups[?Volume.VolumeType==`ONTAP`].{VolumeID: Volume.VolumeId, FSType: Volume.VolumeType, FSid: Volume.FileSystemId, BackupId: BackupId}' --profile phx --output table
--------------------------------------------------------------------------------------------
-|                                     DescribeBackups                                     |
-+--------------------------+---------+------------------------+---------------------------+
-|         BackupId         | FSType  |         FSid           |         VolumeID          |
-+--------------------------+---------+------------------------+---------------------------+
-|  backup-0b1256d0ab26215e9|  ONTAP  |  fs-0d5e022912689767c  |  fsvol-01813a2b13b89be07  |
-|  backup-0fcf37d749b74440d|  ONTAP  |  fs-0d5e022912689767c  |  fsvol-0a6a05c31521606c2  |
-|  backup-086c4cdb38be79600|  ONTAP  |  fs-0d5e022912689767c  |  fsvol-0f551a3259699e38f  |
-|  backup-09b5b4315ee3de53a|  ONTAP  |  fs-0d5e022912689767c  |  fsvol-04b853556726df317  |
-|  backup-09fd6123b6fc39251|  ONTAP  |  fs-0d5e022912689767c  |  fsvol-049588caf162b4357  |
-|  backup-05fa4b4d799328513|  ONTAP  |  fs-0d5e022912689767c  |  fsvol-011cb8439e32c213f  |
-|  backup-0c05ee2983198ff90|  ONTAP  |  fs-0d5e022912689767c  |  fsvol-0b4e2b7a78d006993  |
-|  backup-0c8d6e19916b04e80|  ONTAP  |  fs-0d5e022912689767c  |  fsvol-0cd9704aff4c559f2  |
-|  backup-0ff2dc0d43e703a11|  ONTAP  |  fs-0d5e022912689767c  |  fsvol-0595fca9e7a7cbc4d  |
-|  backup-09a431144e3c7ae8e|  ONTAP  |  fs-0d5e022912689767c  |  fsvol-0b754664a6e276a33  |
-|  backup-0af14c05d3d336f5c|  ONTAP  |  fs-0bb890bd2a272c090  |  fsvol-01d61f5c2359261d3  |
-|  backup-003524d9decc56f4f|  ONTAP  |  fs-0bb890bd2a272c090  |  fsvol-0d6387e001a4e6a98  |
-|  backup-065d8afed23a0ce9f|  ONTAP  |  fs-0bb890bd2a272c090  |  fsvol-01410f8954f011c89  |
-|  backup-062369dd3c9e6cdcd|  ONTAP  |  fs-0bb890bd2a272c090  |  fsvol-0a3bfbe4a8dc7159e  |
-|  backup-0943c8c7894c32761|  ONTAP  |  fs-0bb890bd2a272c090  |  fsvol-0fe4f31e9ecf08c1d  |
-|  backup-07615af5c36caabcc|  ONTAP  |  fs-0bb890bd2a272c090  |  fsvol-06fe5dc7da8b431d0  |
-|  backup-04358495bad737fe7|  ONTAP  |  fs-0bb890bd2a272c090  |  fsvol-001a69d7bacff4110  |
-|  backup-0e2a8d6e44780028a|  ONTAP  |  fs-0bb890bd2a272c090  |  fsvol-0cd6f8f002b319403  |
-|  backup-06324704afd52b408|  ONTAP  |  fs-0bb890bd2a272c090  |  fsvol-03e67c9b07a67cd60  |
-|  backup-0df600d8f80256ac4|  ONTAP  |  fs-0bb890bd2a272c090  |  fsvol-02705e8b91f935ab7  |
-|  backup-035c2817809e22a0c|  ONTAP  |  fs-0bb890bd2a272c090  |  fsvol-06ef07d3f0d17b0de  |
-|  backup-07b04e7770b02cb6a|  ONTAP  |  fs-0bb890bd2a272c090  |  fsvol-0c86fa7f0879976bb  |
-|  backup-0e3bbf566ff3ee258|  ONTAP  |  fs-0bb890bd2a272c090  |  fsvol-0ee7b63d16a422ca0  |
-|  backup-0ca019b9d3083346a|  ONTAP  |  fs-0bb890bd2a272c090  |  fsvol-02c83f900ba21ed64  |
-|  backup-09f4326537cd373ab|  ONTAP  |  fs-0bb890bd2a272c090  |  fsvol-09908649537bca675  |
-|  backup-005c59f0cece82eff|  ONTAP  |  fs-0bb890bd2a272c090  |  fsvol-06c879f69ceee7671  |
-|  backup-0bb8659bc80390f0f|  ONTAP  |  fs-0bb890bd2a272c090  |  fsvol-0281e824d719cca4b  |
-|  backup-0c78dbf3a426637e0|  ONTAP  |  fs-0bb890bd2a272c090  |  fsvol-041d066e763786de9  |
-|  backup-05480f96f3bbb7462|  ONTAP  |  fs-0bb890bd2a272c090  |  fsvol-09c5611b21fb4af3a  |
-|  backup-00dc1aecfda242007|  ONTAP  |  fs-0bb890bd2a272c090  |  fsvol-08a8f516ecb28f8cc  |
-|  backup-0eb38dbf70dd35078|  ONTAP  |  fs-0bb890bd2a272c090  |  fsvol-07257fa804d30828e  |
-|  backup-0859d81c94e7ce943|  ONTAP  |  fs-0bb890bd2a272c090  |  fsvol-0e32cdbcef0dcc7bf  |
-+--------------------------+---------+------------------------+---------------------------+
-
-&
-(awscliv2) $ aws fsx describe-backups --query 'Backups[?FileSystem.FileSystemType==`LUSTRE`].{FSType: FileSystem.FileSystemType, BackupId: BackupId, FSId: FileSystem.FileSystemId}' --profile phx --output table --no-cli-pager
-----------------------------------------------------------------
-|                        DescribeBackups                       |
-+---------------------------+------------------------+---------+
-|         BackupId          |         FSId           | FSType  |
-+---------------------------+------------------------+---------+
-|  backup-06398fcad6b0a80e2 |  fs-03041963e67700536  |  LUSTRE |
-|  backup-09e9cd8fabbc32c9f |  fs-093d61e8fca63f65c  |  LUSTRE |
-|  backup-0d720d960d833958b |  fs-01ef43bb9188b0911  |  LUSTRE |
-|  backup-0a7cd87f17c49a5fe |  fs-0038f6d384178f8e1  |  LUSTRE |
-|  backup-03aedfd424910f65e |  fs-053353f7decc28598  |  LUSTRE |
-|  backup-01644445073eb3875 |  fs-0f2fe5cee39317959  |  LUSTRE |
-|  backup-06c03ba2c6c04019b |  fs-039288c689e53ce3f  |  LUSTRE |
-|  backup-05db5afbf7fcfd1b9 |  fs-0b4ad830925677665  |  LUSTRE |
-|  backup-08465fd9056068987 |  fs-05b0c605bfd4d99f5  |  LUSTRE |
-|  backup-00082197deba9e775 |  fs-0d9c2de794f9d0f5e  |  LUSTRE |
-+---------------------------+------------------------+---------+
-
-(awscliv2) $ aws fsx describe-backups --query 'Backups[?FileSystemType=="LUSTRE"].FileSystem[].{"FS ID": FileSystemId, FileSystemType: FileSystemType}' --profile phx --output table
---------------------------------------------
-|              DescribeBackups             |
-+-----------------------+------------------+
-|         FS ID         | FileSystemType   |
-+-----------------------+------------------+
-|  fs-03041963e67700536 |  LUSTRE          |
-|  fs-093d61e8fca63f65c |  LUSTRE          |
-|  fs-01ef43bb9188b0911 |  LUSTRE          |
-|  fs-053353f7decc28598 |  LUSTRE          |
-|  fs-0038f6d384178f8e1 |  LUSTRE          |
-|  fs-02e3667179daef6d7 |  LUSTRE          |
-|  fs-0b4ad830925677665 |  LUSTRE          |
-|  fs-05b0c605bfd4d99f5 |  LUSTRE          |
-|  fs-0d9c2de794f9d0f5e |  LUSTRE          |
-|  fs-058b891a76555eca1 |  LUSTRE          |
-|  fs-0b6015847cad2a3d8 |  LUSTRE          |
-|  fs-004bfa8b9c73fa3d0 |  LUSTRE          |
-|  fs-0542d9faf979c7e39 |  LUSTRE          |
-|  fs-0a7765c981e8c5f8c |  LUSTRE          |
-|  fs-0269acd9e3fac5a60 |  LUSTRE          |
-
-(awscliv2) $ aws fsx describe-backups --query 'Backups[?FileSystemType=="LUSTRE"].{"FS ID": FileSystem.FileSystemId, FileSystemType: FileSystem.FileSystemType, BackupId: BackupId}' --profile phx --output table
-------------------------------------------------------------------------
-|                            DescribeBackups                           |
-+--------------------------+------------------------+------------------+
-|         BackupId         |         FS ID          | FileSystemType   |
-+--------------------------+------------------------+------------------+
-|  backup-06398fcad6b0a80e2|  fs-03041963e67700536  |  LUSTRE          |
-|  backup-09e9cd8fabbc32c9f|  fs-093d61e8fca63f65c  |  LUSTRE          |
-|  backup-0d720d960d833958b|  fs-01ef43bb9188b0911  |  LUSTRE          |
-|  backup-0463cc3b6404fb979|  fs-053353f7decc28598  |  LUSTRE          |
-|  backup-0d7a50f329ef919e4|  fs-0038f6d384178f8e1  |  LUSTRE          |
-
-(awscliv2) $ aws ec2 describe-instances --filters Name=instance-state-name,Values=running --query "Reservations[*].Instances[*].InstanceId" --output text --profile dev
-i-0a4209dfc5774a2ea
-i-09379cb842ed015f2
-i-0d7aca605032e6ff3
-i-0bf8c4933a451c3a9
-i-0e9e36308d1dad996
-i-0f57b147ea9124344
-i-0cb02b3c973b77bf6
-i-03b9a2b946be51127
-i-0327cf04986086711
-i-0f1baa88774a3ac9d
-
-To add nested data to the list, you add another multiselect list. The following example expands on the previous example by also filtering for InstanceId and State in the nested 
-Attachments list. This results in the following expression.
+```
 
 
-(awscliv2) $ aws ec2 describe-volumes --query 'Volumes[].[VolumeId, VolumeType, Attachments[].[InstanceId, State][][]]' --profile dev^C
-(awscliv2) $ aws ec2 describe-volumes --query 'Volumes[].[VolumeId, VolumeType, Attachments[].[InstanceId, State]]' --profile dev
+`**instance-state-name**` - The state of the instance (pending | running | shutting-down | terminated | stopping | stopped).
+`**instance-status.reachability**` - Filters on instance status where the name is reachability (passed | failed | initializing | insufficient-data).
+`**instance-status.status**` - The status of the instance (ok | impaired | initializing | insufficient-data | not-applicable).
+`**system-status.reachability**` - Filters on system status where the name is reachability (passed | failed | initializing | insufficient-data).
+`**system-status.status**` - The system status of the instance (ok | impaired | initializing | insufficient-data | not-applicable).
 
-Adding labels to identifier values
-To make this output easier to read, use a multiselect hash with the following syntax.::
 
-
-(awscliv2) $ aws ec2 describe-volumes --query 'Volumes[].{VolumeId: VolumeId, VolumeType: VolumeType, InstanceId: Attachments[0].InstanceId, State: Attachments[0].State}' --profile dev --output table
-----------------------------------------------------------------------------
-|                              DescribeVolumes                             |
-+----------------------+-----------+-------------------------+-------------+
-|      InstanceId      |   State   |        VolumeId         | VolumeType  |
-+----------------------+-----------+-------------------------+-------------+
-|  i-0327cf04986086711 |  attached |  vol-01ea79cc1c0916b00  |  gp3        |
-|  i-03b9a2b946be51127 |  attached |  vol-02c7682c6cc3d3683  |  gp3        |
-|  i-0327cf04986086711 |  attached |  vol-0aec200671bfcc19c  |  gp3        |
-|  i-0f1baa88774a3ac9d |  attached |  vol-0cac708d236f9b678  |  gp3        |
-|  i-0f1baa88774a3ac9d |  attached |  vol-05fe294544859c37e  |  gp3        |
-|  i-03b9a2b946be51127 |  attached |  vol-0e09c8f1c14697206  |  gp3        |
-|  i-0a4209dfc5774a2ea |  attached |  vol-05f53cf2c46662d8d  |  gp2        |
-|  i-09379cb842ed015f2 |  attached |  vol-0b54ef040b97682e3  |  gp2        |
-|  i-0c9e1155fe0105ed6 |  attached |  vol-0789abc045cdb2a56  |  gp3        |
-|  i-0c9e1155fe0105ed6 |  attached |  vol-08684d2880b2cf22b  |  io1        |
-|  i-0c9e1155fe0105ed6 |  attached |  vol-0ad69e58bb689838e  |  gp2        |
-|  i-0c9e1155fe0105ed6 |  attached |  vol-0fbe38a5b1656f575  |  gp3        |
-|  i-0d7aca605032e6ff3 |  attached |  vol-00572e3b4a47a6b15  |  gp2        |
-|  i-0bf8c4933a451c3a9 |  attached |  vol-016f1a958312578e7  |  gp3        |
-|  i-0e9e36308d1dad996 |  attached |  vol-0a16954434b191c4c  |  gp3        |
-|  i-0bf8c4933a451c3a9 |  attached |  vol-0cce47cc4afeb644c  |  gp3        |
-|  i-0e9e36308d1dad996 |  attached |  vol-04c7fed89d5e591b0  |  gp3        |
-|  i-0f57b147ea9124344 |  attached |  vol-02b261613c3dde2f6  |  gp3        |
-|  i-0f57b147ea9124344 |  attached |  vol-0060d2ec85131a87b  |  gp3        |
-|  None                |  None     |  vol-0252c38cba0f4373c  |  gp2        |
-|  None                |  None     |  vol-0c505e55ec2133e9e  |  gp2        |
-|  i-02e4cbcbe10cb5e79 |  attached |  vol-0b88f41975ef5cb3f  |  gp2        |
-|  i-0cb02b3c973b77bf6 |  attached |  vol-09ed8d3e9baa62b0a  |  gp2        |
-+----------------------+-----------+-------------------------+-------------+
-
-==>
-instance-state-name - The state of the instance (pending | running | shutting-down | terminated | stopping | stopped).
-instance-status.reachability - Filters on instance status where the name is reachability (passed | failed | initializing | insufficient-data).
-
-instance-status.status - The status of the instance (ok | impaired | initializing | insufficient-data | not-applicable).
-
-system-status.reachability - Filters on system status where the name is reachability (passed | failed | initializing | insufficient-data).
-
-system-status.status - The system status of the instance (ok | impaired | initializing | insufficient-data | not-applicable).
 <==
-
-(awscliv2) $ aws cloudwatch list-metrics --namespace AWS/EC2  --profile dev
 
 
 (awscliv2) $ aws cloudwatch list-metrics --namespace AWS/EC2 --metric-name CPUUtilization --query  'Metrics[].{Namespace:Namespace, MetricName:MetricName, InstanceId: Dimensions[0].Value}' --profile dev --output table --no-cli-pager
@@ -331,32 +153,6 @@ system-status.status - The system status of the instance (ok | impaired | initia
 +----------------------+------------------+------------+
 
 (awscliv2) $ aws cloudwatch list-metrics --query 'Metrics[].{Namespace:Namespace, MetricName:MetricName, InstanceId: Dimensions[0].Value}' --profile dev --output table --no-cli-pager
-----------------------------------------------------------------------------------------------------------------------------------------------------------
-|                                                                       ListMetrics                                                                      |
-+--------------------------------------------------------------------------+-------------------------------------------------------+---------------------+
-|                                InstanceId                                |                      MetricName                       |      Namespace      |
-+--------------------------------------------------------------------------+-------------------------------------------------------+---------------------+
-|  stor-fsx-backup-vault                                                   |  NumberOfRecoveryPointsDeleting                       |  AWS/Backup         |
-|  54ad2508-e2f7-4f76-95c5-ac8212a1a5d1                                    |  TotalDataRetained                                    |  AWS/CloudTrail     |
-|  58                                                                      |  StorageWriteBytes                                    |  AWS/CodeBuild      |
-|  AWS::CloudWatch::Alarm                                                  |  ConfigurationRecorderInsufficientPermissionsFailure  |  AWS/Config         |
-|  None                                                                    |  AccountMaxReads                                      |  AWS/DynamoDB       |
-|  vol-0cf1e99322abb3f02                                                   |  VolumeIdleTime                                       |  AWS/EBS            |
-|  i-02f4bd38740576ab6                                                     |  MetadataNoToken                                      |  AWS/EC2            |		( sort -uk 6,6 kk)
-|  nxdi-storage                                                            |  RepositoryPullCount                                  |  AWS/ECR            |
-|  adf-aws-monitoring-EC2-State-Change-Rule                                |  TriggeredRules                                       |  AWS/Events         |
-|  None                                                                    |  ListDeliveryStreams.Latency                          |  AWS/Firehose       |
-|  fsvol-04e79a86861987e1e                                                 |  StorageUsed                                          |  AWS/FSx            |
-|  hwde-storage-lambda-cicd-iecssd103-cfn-check-function                   |  Errors                                               |  AWS/Lambda         |
-|  /aws/codebuild/hwde-storage-codebuild-cicd-ieawsc101-postconfig-project |  IncomingLogEvents                                    |  AWS/Logs           |
-|  AllStorageTypes                                                         |  NumberOfObjects                                      |  AWS/S3             |
-|  Resource                                                                |  ResourceCount                                        |  AWS/SecretsManager |
-|  adf-aws-monitoring-EC2-state-notification-v1                            |  NumberOfNotificationsDelivered                       |  AWS/SNS            |
-|  TestQueue                                                               |  ApproximateAgeOfOldestMessage                        |  AWS/SQS            |
-|  None                                                                    |  CommandsFailed                                       |  AWS/SSM-RunCommand |
-|  ListActivities                                                          |  ProvisionedBucketSize                                |  AWS/States         |
-|  API                                                                     |  CallCount                                            |  AWS/Usage          |
-+--------------------------------------------------------------------------+-------------------------------------------------------+---------------------+
 
 $ aws cloudwatch list-metrics --include-linked-accounts --owning-account "111122223333"
 
