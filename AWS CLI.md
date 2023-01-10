@@ -188,17 +188,12 @@ The following example queries all Volumes content.
 ✍ To view a specific range of volumes by index, use slice with the following syntax, where start is the starting array index, stop is the index where the filter stops processing, and step is the skip interval.
 
 ```Shell
-> Syntax
->
-> `<arrayName>[<start>:<stop>:<step>]`
->
-> If any of these are omitted from the slice expression, they use the following default values:
->
->	Start – The first index in the list, 0.
->
->	Stop – The last index in the list.
->
->	Step – No step skipping, where the value is 1.
+Syntax
+<arrayName>[<start>:<stop>:<step>]`
+If any of these are omitted from the slice expression, they use the following default values:
+Start – The first index in the list, 0.
+Stop – The last index in the list.
+Step – No step skipping, where the value is 1.
 ```
 
 
