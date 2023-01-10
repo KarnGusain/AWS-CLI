@@ -28,7 +28,7 @@
 |  i-0c9e1235fe0666ed6 |  attached |  vol-0fbe38a5b1656f575  |  gp3        |
 +----------------------+-----------+-------------------------+-------------+
 ```
-✍ What is difrence while using `--query` and `--filter` in aws cli?
+✍ What is difference while using `--query` and `--filter` in aws cli?
 
 ✍ Essentially `--filter` is the condition used to select which resources you want described, listed, etc. On the other hand `--query` is the list of fields that you want returned in the response. You can do some simple filtering with `--query` as well but `--filter` tends to be more powerful.
 Below is an example
