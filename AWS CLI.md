@@ -200,6 +200,58 @@ Stop – The last index in the list.
 Step – No step skipping, where the value is 1.
 ```
 
+✍ How to use index based Selection in AWS CLI?
+For an example if you are listing the `ec2` volumes to return only the first two volumes, you use a `start value of 0`, a `stop value of 2`, and a `step value of 1` as shown in the following example.
+
+```Sehll
+(awscliv2) $ aws ec2 describe-volumes --query 'Volumes[0:2:1].Attachments[].{AttachTime: AttachTime, Device: Device, InstanceId: InstanceId, VolumeId: VolumeId, DeleteOnTermination: DeleteOnTermination, State: State}' --profile dev --output table
+------------------------------------------------------------------------------------------------------------------------------
+|                                                       DescribeVolumes                                                      |
++---------------------------+----------------------+-----------+----------------------+------------+-------------------------+
+|        AttachTime         | DeleteOnTermination  |  Device   |     InstanceId       |   State    |        VolumeId         |
++---------------------------+----------------------+-----------+----------------------+------------+-------------------------+
+|  2022-12-22T12:49:14+00:00|  True                |  /dev/sdb |  i-06253db1de27a1472 |  attached  |  vol-0034927f6d89a987c  |
+|  2022-12-22T12:49:14+00:00|  True                |  /dev/sdb |  i-0c9e0188fe0105ed6 |  attached  |  vol-0ad69e58bb689838e  |
++---------------------------+----------------------+-----------+----------------------+------------+-------------------------+
+```
+
+✍ Since the above example contains default values, you can shorten the slice from Volumes[0:2:1] to Volumes[:2] this will ensude the same results.
+
+```Shell
+(awscliv2) $ aws ec2 describe-volumes --query 'Volumes[:2].Attachments[].{AttachTime: AttachTime, Device: Device, InstanceId: InstanceId, VolumeId: VolumeId, DeleteOnTermination: DeleteOnTermination, State: State}' --profile dev --output table
+------------------------------------------------------------------------------------------------------------------------------
+|                                                       DescribeVolumes                                                      |
++---------------------------+----------------------+-----------+----------------------+------------+-------------------------+
+|        AttachTime         | DeleteOnTermination  |  Device   |     InstanceId       |   State    |        VolumeId         |
++---------------------------+----------------------+-----------+----------------------+------------+-------------------------+
+|  2022-12-22T12:49:14+00:00|  True                |  /dev/sdb |  i-06253db1de27a1472 |  attached  |  vol-0034927f6d89a987c  |
+|  2022-12-22T12:49:14+00:00|  True                |  /dev/sdb |  i-0c9e0188fe0105ed6 |  attached  |  vol-0ad69e58bb689838e  |
++---------------------------+----------------------+-----------+----------------------+------------+-------------------------+
+```
+
+✍ As you see the above example where we are using index basd `--query` to get the listing of our `VolumeId` and other attributes,
+Filtering nested data
+<expression>.<expression>
+
+To narrow the filtering of the Volumes[*] for nested values, you use subexpressions by appending a period and your filter criteria.
+
+```Shell
+(awscliv2) $ aws ec2 describe-volumes --query 'Volumes[*].{AttachTime: Attachments[0].AttachTime, Device: Attachments[0].Device, InstanceId: Attachments[0].InstanceId, VolumeId: Attachments[0].VolumeId, DeleteOnTermination: Attachments[0].DeleteOnTermination, "Volume State": Attachments[0].State, SnapshotId: SnapshotId,  Iops: Iops, Size: Size, Encrypted: Encrypted, "Volume Status": State }' --profile dev --output table
+```
+
+✍ Steps can also use negative numbers to filter in the reverse order of an array as shown in the following example ...
+
+```Shell
+(awscliv2) $ aws ec2 describe-volumes --query 'Volumes[::-2].{AttachTime: Attachments[0].AttachTime, Device: Attachments[0].Device, InstanceId: Attachments[0].InstanceId, VolumeId: Attachments[0].VolumeId, DeleteOnTermination: Attachments[0].DeleteOnTermination, "Volume State": Attachments[0].State, SnapshotId: SnapshotId,  Iops: Iops, Size: Size, Encrypted: Encrypted, "Volume Status": State }' --profile dev --output table
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|                                                                                             DescribeVolumes                                                                                             |
++---------------------------+----------------------+------------+------------+----------------------+-------+-------+-------------------------+---------------+-----------------+-------------------------+
+|        AttachTime         | DeleteOnTermination  |  Device    | Encrypted  |     InstanceId       | Iops  | Size  |       SnapshotId        | Volume State  |  Volume Status  |        VolumeId         |
++---------------------------+----------------------+------------+------------+----------------------+-------+-------+-------------------------+---------------+-----------------+-------------------------+
+|  2022-12-22T12:49:14+00:00|  True                |  /dev/sdb  |  True      |  i-06253db1de27a1472 |  100  |  30   |  snap-0e428b2088d5f1a7f |  attached     |  in-use         |  vol-0034927f6d89a987c   |
+|  2022-12-22T12:49:14+00:00|  True                |  /dev/sdb  |  True      |  i-0c9e0188fe0105ed6 |  300  |  100  |  snap-0c26d476f059eb3d4 |  attached     |  available      |  vol-0ad69e58bb689838e                   |
++---------------------------+----------------------+------------+------------+----------------------+-------+-------+-------------------------+---------------+-----------------+-------------------------+
+```
 
 
 
