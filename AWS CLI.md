@@ -347,7 +347,7 @@ You simply achieve that by using `create-tags` command using `--tags` attribute,
 ```
 
 ✍ How to create a stack in cloudformation via AWS CLI?
-You can use simplay `create-stack` command with requited attributes such as `--template-body` which contain the Yaml file name having you code, with additional parameter `--capabilities` , else you will encounter an issue like `_An error occurred (InsufficientCapabilitiesException) when calling the CreateStack operation: Requires capabilities : [CAPABILITY_NAMED_IAM]_`.
+You can use simplay `create-stack` command with requited attributes such as `--template-body` which contain the Yaml file name having you code, with additional parameter `--capabilities` , else you will encounter an issue like __An error occurred (InsufficientCapabilitiesException) when calling the CreateStack operation: Requires capabilities : [CAPABILITY_NAMED_IAM]__ .
 
 ```Shell
 (awscliv2) $ aws cloudformation create-stack --stack-name "MyDBStack" --template-body file://test.yaml --capabilities CAPABILITY_NAMED_IAM --profile dev
