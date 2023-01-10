@@ -189,7 +189,7 @@ The following example queries all Volumes content.
 
 > Syntax
 >
-> <arrayName>[<start>:<stop>:<step>]
+> [ <arrayName>[<start>:<stop>:<step>] ]
 >
 > If any of these are omitted from the slice expression, they use the following default values:
 >
