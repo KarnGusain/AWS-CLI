@@ -172,15 +172,15 @@ AWS KB refence: https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/v
 Note:
 -----
 
-> **instance-state-name** - The state of the instance (pending | running | shutting-down | terminated | stopping | stopped).
+> **instance-state-name:**  `The state of the instance (pending | running | shutting-down | terminated | stopping | stopped).`
 > 
-> **instance-status.reachability** - Filters on instance status where the name is reachability (passed | failed | initializing | insufficient-data).
+> **instance-status.reachability:** `Filters on instance status where the name is reachability (passed | failed | initializing | insufficient-data).`
 > 
-> **instance-status.status** - The status of the instance (ok | impaired | initializing | insufficient-data | not-applicable).
+> **instance-status.status:** `The status of the instance (ok | impaired | initializing | insufficient-data | not-applicable).`
 > 
-> **system-status.reachability** - Filters on system status where the name is reachability (passed | failed | initializing | insufficient-data).
+> **system-status.reachability:** `Filters on system status where the name is reachability (passed | failed | initializing | insufficient-data).`
 > 
-> **system-status.status**` - The system status of the instance (ok | impaired | initializing | insufficient-data | not-applicable).
+> **system-status.status:** `The system status of the instance (ok | impaired | initializing | insufficient-data | not-applicable).`
 
 
 ✍ To filter through all output from an array, you can use the wildcard notation. Wildcard expressions are expressions used to return elements using the * notation.
