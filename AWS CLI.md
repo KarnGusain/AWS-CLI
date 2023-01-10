@@ -187,6 +187,7 @@ The following example queries all Volumes content.
 ✍ To view a specific volume in the array by index, you call the array index. For example, the first item in the Volumes array has an index of 0, resulting in the Volumes[0] query. For more information about array indexes, see index expressions on the JMESPath website(https://jmespath.org/specification.html#index-expressions).
 ✍ To view a specific range of volumes by index, use slice with the following syntax, where start is the starting array index, stop is the index where the filter stops processing, and step is the skip interval.
 
+```Shell
 > Syntax
 >
 > `<arrayName>[<start>:<stop>:<step>]`
@@ -198,7 +199,7 @@ The following example queries all Volumes content.
 >	Stop – The last index in the list.
 >
 >	Step – No step skipping, where the value is 1.
-
+```
 
 
 
