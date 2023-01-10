@@ -152,7 +152,7 @@ Bleow is how you can get `IAM` roles listing, you have to create `profile` to us
 (awscliv2) $ aws cloudwatch list-metrics --include-linked-accounts --owning-account "111122223333"
 ```
 
-AWS KB refence: https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html
+➜ AWS KB Reference:  https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html
 
 ✍ To get the status of all instances with an instance status of `ok`, use the following command.::
 
@@ -350,6 +350,6 @@ You simply achieve that by using `create-tags` command using `--tags` attribute,
 You can use simplay `create-stack` command with requited attributes such as `--template-body` which contain the Yaml file name having you code, with additional parameter `--capabilities` , else you will encounter an issue like `_An error occurred (InsufficientCapabilitiesException) when calling the CreateStack operation: Requires capabilities : [CAPABILITY_NAMED_IAM]_`.
 
 ```Shell
-(awscliv2) $ aws cloudformation create-stack --stack-name "aws-backup-test-for-retention-and-lock" --template-body file://aws_backup_poc.yaml --capabilities CAPABILITY_NAMED_IAM --profile dev
+(awscliv2) $ aws cloudformation create-stack --stack-name "MyDBStack" --template-body file://test.yaml --capabilities CAPABILITY_NAMED_IAM --profile dev
 ```
 
