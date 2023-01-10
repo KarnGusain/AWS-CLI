@@ -127,6 +127,7 @@ Bleow is how you can get `IAM` roles listing, you have to create `profile` to us
 
 ✍ How to list `cloudwatch` metrics using `namespace` ?
 
+```Shell
 (awscliv2) $ aws cloudwatch list-metrics --namespace AWS/EC2 --metric-name CPUUtilization --query  'Metrics[].{Namespace:Namespace, MetricName:MetricName, InstanceId: Dimensions[0].Value}' --profile dev --output table --no-cli-pager
 --------------------------------------------------------
 |                      ListMetrics                     |
@@ -137,14 +138,19 @@ Bleow is how you can get `IAM` roles listing, you have to create `profile` to us
 |  i-0c9e1111fe0207ed6 |  CPUUtilization  |  AWS/EC2   |
 |  i-0c8d2011fe0105ct9 |  CPUUtilization  |  AWS/EC2   |
 +----------------------+------------------+------------+
+```
 
 ✍ List all the `cloudwatch` metrics regardless of `namespace` then you can use below query.
 
-`(awscliv2) $ aws cloudwatch list-metrics --query 'Metrics[].{Namespace:Namespace, MetricName:MetricName, InstanceId: Dimensions[0].Value}' --profile dev --output table --no-cli-pager`
+```Shell
+(awscliv2) $ aws cloudwatch list-metrics --query 'Metrics[].{Namespace:Namespace, MetricName:MetricName, InstanceId: Dimensions[0].Value}' --profile dev --output table --no-cli-pager`
+```
 
 ✍ How you can list `cloudwatch` metrics based on the particular `--owning-account` ?
 
+```shell
 (awscliv2) $ aws cloudwatch list-metrics --include-linked-accounts --owning-account "111122223333"
+```
 
 AWS KB refence: https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html
 
@@ -166,10 +172,10 @@ AWS KB refence: https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/v
 Note:
 -----
 
-`**instance-state-name**` - The state of the instance (pending | running | shutting-down | terminated | stopping | stopped).
-`**instance-status.reachability**` - Filters on instance status where the name is reachability (passed | failed | initializing | insufficient-data).
-`**instance-status.status**` - The status of the instance (ok | impaired | initializing | insufficient-data | not-applicable).
-`**system-status.reachability**` - Filters on system status where the name is reachability (passed | failed | initializing | insufficient-data).
+**instance-state-name** - The state of the instance (pending | running | shutting-down | terminated | stopping | stopped).
+**instance-status.reachability** - Filters on instance status where the name is reachability (passed | failed | initializing | insufficient-data).
+**instance-status.status** - The status of the instance (ok | impaired | initializing | insufficient-data | not-applicable).
+**system-status.reachability** - Filters on system status where the name is reachability (passed | failed | initializing | insufficient-data).
 `**system-status.status**` - The system status of the instance (ok | impaired | initializing | insufficient-data | not-applicable).
 
 
@@ -184,9 +190,13 @@ The following example queries all Volumes content.
 > Syntax
 >
 > <arrayName>[<start>:<stop>:<step>]
+>
 > If any of these are omitted from the slice expression, they use the following default values:
+>
 >	Start – The first index in the list, 0.
+>
 >	Stop – The last index in the list.
+>
 >	Step – No step skipping, where the value is 1.
 
 
