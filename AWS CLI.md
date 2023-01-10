@@ -12,7 +12,7 @@
 |  vol-0888de7b0f1c7ea28  |  gp3  |
 +-------------------------+-------+
 ```
-
+`rgb(R,G,B)`	
 ✍ One can even `sort` the resource attributed using by `sort_by` function and use additional options like `--output` or `no-cli-pager` to get output in a tabular form and full output without having pagination stoppage.
 
 ```Shell
@@ -28,6 +28,7 @@
 |  i-0c9e1235fe0666ed6 |  attached |  vol-0fbe38a5b1656f575  |  gp3        |
 +----------------------+-----------+-------------------------+-------------+
 ```
+`rgb(9, 105, 218)`
 ✍ What is difference while using `--query` and `--filter` in aws cli?
 
 ✍ Essentially `--filter` is the condition used to select which resources you want described, listed, etc. On the other hand `--query` is the list of fields that you want returned in the response. You can do some simple filtering with `--query` as well but `--filter` tends to be more powerful.
