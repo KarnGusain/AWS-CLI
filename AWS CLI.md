@@ -352,3 +352,48 @@ You can use simplay `create-stack` command with requited attributes such as `--t
 (awscliv2) $ aws cloudformation create-stack --stack-name "MyDBStack" --template-body file://test.yaml --capabilities CAPABILITY_NAMED_IAM --profile dev
 ```
 
+## Specific to `ec2`
+✍ To describe all instances with Tag "NAME" Use:
+```
+(awscliv2) $ aws ec2 describe-instances --filters "Name=tag-key,Values=Name"
+```
+or
+
+✍ This Gives InstanceId with Particular Tag "Name"
+```
+(awscliv2) $ aws ec2 describe-instances --query 'Reservations[].Instances[].[InstanceId, Tags[?Key==`Name`].Value[0]]'
+```
+or
+
+✍ This Gives InstanceId with Particular Tag "Name" and Value of Tag
+```
+(awscliv2) $ aws ec2 describe-instances --query 'Reservations[].Instances[].[InstanceId, Tags[?Key==`Name`], Tags[?Key==`Name`].Value[]]'
+```
+✍ To describe all instances with Tag "Purpose" and its value as "test" Use:
+```
+(awscliv2) $ aws ec2 describe-instances --filters "Name=tag:Purpose,Values=test"
+```
+
+✍ If you already know the Instance id:
+```
+(awscliv2) $ aws ec2 describe-instances --instance-ids i-1234567890abcdef0
+```
+
+✍ To find every instance which doesn't contain a tag named "Purpose":
+```
+(awscliv2) $ aws ec2 describe-instances | jq '.Reservations[].Instances[] | select(contains({Tags: [{Key: "Purpose"} ]}) | not)'
+```
+
+✍ To filter against the value of the tag, instead of the name of the tag:
+```
+(awscliv2) $ aws ec2 describe-instances | jq '.Reservations[].Instances[] | select(contains({Tags: [{Key: "Name"}, {Value: "testbox1"}]}) | not)'
+```
+✍ To find every instance which doesn't contain a tag:
+```
+(awscliv2) $ aws ec2 describe-instances | jq '.Reservations[].Instances[] | select(contains({Tags: [{Key: ""}, {Value: ""}]}) | not)'
+```
+or
+```
+(awscliv2) $ aws ec2 describe-instances --filters "Name=tag:Name,Values=instance_name" | jq .Reservations[0].Instances[0].InstanceId
+```
+
