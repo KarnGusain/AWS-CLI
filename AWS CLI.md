@@ -252,7 +252,104 @@ To narrow the filtering of the Volumes[*] for nested values, you use subexpressi
 |  2022-12-22T12:49:14+00:00|  True                |  /dev/sdb  |  True      |  i-0c9e0188fe0105ed6 |  300  |  100  |  snap-0c26d476f059eb3d4 |  attached     |  available      |  vol-0ad69e58bb689838e                   |
 +---------------------------+----------------------+------------+------------+----------------------+-------+-------+-------------------------+---------------+-----------------+-------------------------+
 ```
+✍ Filtering for specific values: To filter for specific values in a list, you use a filter expression as shown in the following syntax.
+>
+> Syntax: `[<expression> <comparator> <expression>]`
+>
+> Expression comparators include ==, !=, <, <=, >, and >= . The following example filters for the VolumeIds for all Volumes in an AttachedState.
 
+For an example , if we want list only the volumes those have `State` as an `attached` there we shall use expression comparator `==` that says `equals to`, look at the below example ...
 
+```Shell
+(awscliv2) $ aws ec2 describe-volumes --query 'Volumes[*].Attachments[?State==`attached`].{AttachTime: AttachTime, Device: Device, InstanceId: InstanceId, VolumeId: VolumeId,  "Volume Status": State, DeleteOnTermination: DeleteOnTermination }[]' --profile dev  --no-cli-pager
+[
+    {
+        "AttachTime": "2022-12-22T12:49:14+00:00",
+        "Device": "/dev/sdb",
+        "InstanceId": "i-0327cf01234567899",
+        "VolumeId": "vol-01ou79cc1c0111b00",
+        "Volume Status": "attached",
+        "DeleteOnTermination": true
+    },
+    {
+        "AttachTime": "2022-12-22T12:49:14+00:00",
+        "Device": "/dev/sdb",
+        "InstanceId": "i-03b9a2b946be12345",
+        "VolumeId": "vol-02c7682c6cc3d4321",
+        "Volume Status": "attached",
+        "DeleteOnTermination": true
+    },
+```
 
+✍ If you want to flattened resulting the in the following example.
+
+```Shell
+(awscliv2) $ aws ec2 describe-volumes --query 'Volumes[*].Attachments[?State==`attached`][].{AttachTime: AttachTime, Device: Device, InstanceId: InstanceId, VolumeId: VolumeId,  "Volume Status": State, DeleteOnTermination: DeleteOnTermination }' --profile dev  --no-cli-pager --output table
+------------------------------------------------------------------------------------------------------------------------------------
+|                                                          DescribeVolumes                                                         |
++---------------------------+----------------------+------------+----------------------+-----------------+-------------------------+
+|        AttachTime         | DeleteOnTermination  |  Device    |     InstanceId       |  Volume Status  |        VolumeId         |
++---------------------------+----------------------+------------+----------------------+-----------------+-------------------------+
+|  2022-12-22T12:49:14+00:00|  True                |  /dev/sdb  |  i-0327cf04986086711 |  attached       |  vol-01ea79cc1c0916b00  |
+|  2022-12-22T12:49:14+00:00|  True                |  /dev/sdb  |  i-03b9a2b946be51127 |  attached       |  vol-02c7682c6cc3d3683  |
+|  2022-12-22T12:49:14+00:00|  True                |  /dev/sda1 |  i-0327cf04986086711 |  attached       |  vol-0aec200671bfcc19c  |
+|  2022-10-13T07:28:44+00:00|  True                |  /dev/xvda |  i-02e4cbcbe10cb5e79 |  attached       |  vol-0b88f41975ef5cb3f  |
+|  2022-10-18T11:10:28+00:00|  True                |  /dev/xvda |  i-0cb02b3c973b77bf6 |  attached       |  vol-09ed8d3e9baa62b0a  |
++---------------------------+----------------------+------------+----------------------+-----------------+-------------------------+
+
+✍ The another example using comparator(comparisioon operators) for numric validation, in the below example we are filtering for the `VolumeIds` of all Volumes that have a size greater than 100.
+
+```Shell
+(awscliv2) $ aws ec2 describe-volumes --query 'Volumes[?Size >`100`].{AttachTime: Attachments[0].AttachTime, Device: Attachments[0].Device, InstanceId: Attachments[0].InstanceId, VolumeId: Attachments[0].VolumeId, DeleteOnTermination: Attachments[0].DeleteOnTermination, "Volume State": Attachments[0].State, SnapshotId: SnapshotId,  Iops: Iops, Size: Size, Encrypted: Encrypted, "Volume Status": State }' --profile dev --output table
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|                                                                                       DescribeVolumes                                                                                       |
++---------------------------+----------------------+------------+------------+----------------------+-------+-------+-------------+---------------+-----------------+-------------------------+
+|        AttachTime         | DeleteOnTermination  |  Device    | Encrypted  |     InstanceId       | Iops  | Size  | SnapshotId  | Volume State  |  Volume Status  |        VolumeId         |
++---------------------------+----------------------+------------+------------+----------------------+-------+-------+-------------+---------------+-----------------+-------------------------+
+|  2022-06-28T12:35:03+00:00|  True                |  /dev/xvdf |  True      |  i-0c9e1155fe0105ed6 |  3000 |  140  |             |  attached     |  in-use         |  vol-0789abc045cdb2a56  |
+|  2022-06-28T12:40:34+00:00|  True                |  /dev/sdb  |  True      |  i-0c9e1155fe0105ed6 |  1620 |  540  |             |  attached     |  in-use         |  vol-0ad69e58bb689838e  |
+|  2022-06-28T12:44:35+00:00|  True                |  /dev/xvdg |  True      |  i-0c9e1155fe0105ed6 |  3072 |  500  |             |  attached     |  in-use         |  vol-0fbe38a5b1656f575  |
++---------------------------+----------------------+------------+------------+----------------------+-------+-------+-------------+---------------+-----------------+-------------------------+
+```
+
+➜ AWS KB Reference: https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-filter.html
+
+aws ec2 describe-images --owners self --query 'reverse(sort_by(Images,&CreationDate))[:5].{id:ImageId,date:CreationDate}' --profile dev
+
+✍ How you can filter the AWS Images with the particular Owner?
+You can use `aws ec2 describe-images` and ther you can use filters based on the `Name & Value` further combining with `--query` and even you can sort them using `sort_by()` function.
+
+```Shell
+(awscliv2) $ aws ec2 describe-images --owners amazon --filters "Name=name,Values=amzn*gp2" "Name=virtualization-type,Values=hvm" "Name=root-device-type,Values=ebs" --query "sort_by(Images, &CreationDate)[-1].ImageId"   --output text --profile dev
+```
+
+✍ How to check the `IOPS` for an `ec2` volume which is active or `in-use` using comparator to filter out the VolumeId with certain `IOPS`.
+The following example displays the number of available volumes that are more than 1000 IOPS by using length to count how many are in a list.
+
+```Shell
+(awscliv2) $ aws ec2 describe-volumes --filters "Name=status,Values=in-use" --query 'Volumes[?Iops > `300`].{Iops: Iops, VolumeId: VolumeId}' --profile dev --output table
+-----------------------------------
+|         DescribeVolumes         |
++------+--------------------------+
+| Iops |        VolumeId          |
++------+--------------------------+
+|  3000|  vol-01ea11tt1c0516b00   |
+|  3000|  vol-0952abc017cdbd956   |
+|  1250|  vol-01234d2880b2cf90b   |
+|  1620|  vol-0ad60e11bb123456e   |
++------+--------------------------+
+```
+
+✍ How to add tags to an `ec2` instance? 
+You simply achieve that by using `create-tags` command using `--tags` attribute, see the example below.
+```Shell
+(awscliv2) $ aws ec2 create-tags --resources <ec2_Instnace_Id> --tags Key=DBhost,Value=mybdhost001.example.com --profile dev
+```
+
+✍ How to create a stack in cloudformation via AWS CLI?
+You can use simplay `create-stack` command with requited attributes such as `--template-body` which contain the Yaml file name having you code, with additional parameter `--capabilities` , else you will encounter an issue like `_An error occurred (InsufficientCapabilitiesException) when calling the CreateStack operation: Requires capabilities : [CAPABILITY_NAMED_IAM]_`.
+
+```Shell
+(awscliv2) $ aws cloudformation create-stack --stack-name "aws-backup-test-for-retention-and-lock" --template-body file://aws_backup_poc.yaml --capabilities CAPABILITY_NAMED_IAM --profile dev
+```
 
