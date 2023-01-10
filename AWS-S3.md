@@ -1,4 +1,4 @@
-# AWS
+
 # AWS S3
 
 Ques: How many request requite to upload a folder in AWS S3?
