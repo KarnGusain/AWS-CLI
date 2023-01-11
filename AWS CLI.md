@@ -1,10 +1,6 @@
 # AWS CLI usage 
 ===============================================================
 
-[![AWS Command Line Interface](https://img.shields.io/AWS CLI)](https://aws.amazon.com/cli/)
-[![JMESPath Tutoria](https://img.shields.io/JMESPath)](https://jmespath.org/)
-
-
 ✍ Query a Volume and get `Volume ID` and `VolumeType` in a array format.
 
 ```Shell
