@@ -1,5 +1,12 @@
 # AWS CLI usage 
 
+[![PyPI Version](https://img.shields.io/pypi/v/aws-parallelcluster)](https://pypi.org/project/aws-parallelcluster/)
+[![Spack Version](https://img.shields.io/spack/v/aws-parallelcluster)](https://spack.readthedocs.io/en/latest/package_list.html#aws-parallelcluster)
+[![Conda Verseion](https://img.shields.io/conda/vn/conda-forge/aws-parallelcluster)](https://anaconda.org/conda-forge/aws-parallelcluster)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![codecov](https://codecov.io/gh/aws/aws-parallelcluster/branch/develop/graph/badge.svg)](https://codecov.io/gh/aws/aws-parallelcluster)
+[![ParallelCluster CI](https://github.com/aws/aws-parallelcluster/workflows/ParallelCluster%20CI/badge.svg)](https://github.com/aws/aws-parallelcluster/actions)
+
 
 ✍ Query a Volume and get `Volume ID` and `VolumeType` in a array format.
 
