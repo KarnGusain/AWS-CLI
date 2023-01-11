@@ -1,10 +1,5 @@
 # AWS CLI usage 
 
-
-[![AWS Command Line Interface](https://img.shields.io/AWS-CLI/v/awscli)](https://aws.amazon.com/cli/)
-
-
-
 ✍ Query a Volume and get `Volume ID` and `VolumeType` in a array format.
 
 ```Shell
