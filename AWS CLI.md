@@ -1,5 +1,5 @@
 # AWS CLI usage 
-===============================================================
+
 
 ✍ Query a Volume and get `Volume ID` and `VolumeType` in a array format.
 
