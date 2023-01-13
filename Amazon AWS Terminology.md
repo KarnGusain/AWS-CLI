@@ -3,7 +3,7 @@
 
 ✍ **Instance** = One running virtual machine.
 
-✍ **Instance Type **= hardware configuration: cores, memory, disk.
+✍ **Instance Type ** = hardware configuration: cores, memory, disk.
 
 ✍ **Instance Store Volume** = Temporary disk associated with the instance.
 
