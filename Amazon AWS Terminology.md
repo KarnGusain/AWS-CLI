@@ -3,11 +3,11 @@
 
 ✍ **Instance** = One running virtual machine.
 
-✍ **Instance Type ** = hardware configuration: cores, memory, disk.
+✍ **Instance Type** = hardware configuration: cores, memory, disk.
 
 ✍ **Instance Store Volume** = Temporary disk associated with the instance.
 
-✍ **Image (AMI) **= Stored bits that can be turned into instances.
+✍ **Image (AMI)** = Stored bits that can be turned into instances.
 
 ✍ **Key Pair** = Credentials used to access VM from the command line.
 
