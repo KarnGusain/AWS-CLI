@@ -66,7 +66,7 @@ th {
 $table_html
 <br></br>
 Sincerely,<br>
-Storage CIS Team.
+Backup Team.
 </body>
 </html>
 EOM
